@@ -1,7 +1,7 @@
 :root {
   font-family: Inter, system-ui, -apple-system, Segoe UI, Roboto, sans-serif;
   color: #171717;
-  background: #f5f3ef;
+  background: #f5ead6;
 }
 
 * {
@@ -80,9 +80,9 @@ body {
 }
 
 .v2-stats-blurb {
-  border: 1px solid #d6d3d1;
+  border: 1px solid #9e8f73;
   border-radius: 12px;
-  background: #faf8f5;
+  background: #eadcc2;
   padding: 10px 12px;
   min-width: 260px;
 }
@@ -120,7 +120,7 @@ body {
 }
 
 .v2-links a:hover {
-  background: #e7e5e4;
+  background: #e2d0ae;
   transform: translateY(-2px);
   box-shadow: 0 8px 20px rgba(41, 37, 36, 0.14);
 }
@@ -131,9 +131,9 @@ body {
 }
 
 .v2-quotes-tile {
-  border: 1px solid #a8a29e;
-  background: transparent;
-  color: #171717;
+  border: 1px solid #9e8f73;
+  background: #eadcc2;
+  color: #2f281f;
   border-radius: 999px;
   text-align: left;
   cursor: pointer;
@@ -149,9 +149,9 @@ body {
 }
 
 .v2-quotes-tile:hover {
-  background: #e7e5e4;
+  background: #e2d0ae;
   transform: translateY(-2px);
-  box-shadow: 0 8px 20px rgba(41, 37, 36, 0.14);
+  box-shadow: 0 8px 20px rgba(66, 51, 31, 0.18);
 }
 
 .v2-quotes-title {
