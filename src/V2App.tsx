@@ -153,7 +153,7 @@ function V2App() {
           <br />
           Inquisitive Storyteller,
           <br />
-          Revenue-Driving Solution Engineer
+          <span className="v2-no-wrap">Revenue-Driving Solution Engineer</span>
         </h1>
         <p className="v2-subhead">
           I'm Scot - thanks for stopping by!
