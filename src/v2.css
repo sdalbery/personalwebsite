@@ -315,37 +315,43 @@ body {
 
 .v2-moment-play-button {
   position: absolute;
-  top: 50%;
-  left: 50%;
-  transform: translate(-50%, -50%) scale(0.92);
-  width: 52px;
-  height: 52px;
+  top: 10px;
+  right: 10px;
+  width: 24px;
+  height: 24px;
   border: 1px solid rgba(255, 255, 255, 0.55);
   border-radius: 999px;
-  background: rgba(17, 24, 39, 0.56);
+  background: rgba(17, 24, 39, 0.48);
   display: grid;
   place-items: center;
   cursor: pointer;
-  opacity: 0;
-  pointer-events: none;
-  transition: opacity 200ms ease, transform 200ms ease, background-color 200ms ease;
+  transition:
+    top 220ms ease,
+    right 220ms ease,
+    width 220ms ease,
+    height 220ms ease,
+    transform 220ms ease,
+    background-color 220ms ease;
   z-index: 25;
 }
 
 .v2-moment-play-button span {
   width: 0;
   height: 0;
-  border-top: 9px solid transparent;
-  border-bottom: 9px solid transparent;
-  border-left: 14px solid #fff;
-  margin-left: 3px;
+  border-top: 4px solid transparent;
+  border-bottom: 4px solid transparent;
+  border-left: 7px solid #fff;
+  margin-left: 1px;
 }
 
 .v2-moment.has-video:hover .v2-moment-play-button,
 .v2-moment.has-video:focus-within .v2-moment-play-button {
-  opacity: 1;
-  pointer-events: auto;
-  transform: translate(-50%, -50%) scale(1);
+  top: 50%;
+  right: 50%;
+  width: 52px;
+  height: 52px;
+  transform: translate(50%, -50%);
+  background: rgba(17, 24, 39, 0.68);
 }
 
 .v2-moment-play-button:hover {
@@ -500,37 +506,43 @@ body {
 
 .v2-career-play-button {
   position: absolute;
-  top: 96px;
-  left: 50%;
-  transform: translate(-50%, -50%) scale(0.92);
-  width: 52px;
-  height: 52px;
+  top: 24px;
+  right: 24px;
+  width: 24px;
+  height: 24px;
   border: 1px solid rgba(255, 255, 255, 0.55);
   border-radius: 999px;
-  background: rgba(17, 24, 39, 0.56);
+  background: rgba(17, 24, 39, 0.48);
   display: grid;
   place-items: center;
   cursor: pointer;
-  opacity: 0;
-  pointer-events: none;
-  transition: opacity 200ms ease, transform 200ms ease, background-color 200ms ease;
+  transition:
+    top 220ms ease,
+    right 220ms ease,
+    width 220ms ease,
+    height 220ms ease,
+    transform 220ms ease,
+    background-color 220ms ease;
   z-index: 25;
 }
 
 .v2-career-play-button span {
   width: 0;
   height: 0;
-  border-top: 9px solid transparent;
-  border-bottom: 9px solid transparent;
-  border-left: 14px solid #fff;
-  margin-left: 3px;
+  border-top: 4px solid transparent;
+  border-bottom: 4px solid transparent;
+  border-left: 7px solid #fff;
+  margin-left: 1px;
 }
 
 .v2-career-card.has-video:hover .v2-career-play-button,
 .v2-career-card.has-video:focus-within .v2-career-play-button {
-  opacity: 1;
-  pointer-events: auto;
-  transform: translate(-50%, -50%) scale(1);
+  top: 96px;
+  right: 50%;
+  width: 52px;
+  height: 52px;
+  transform: translate(50%, -50%);
+  background: rgba(17, 24, 39, 0.68);
 }
 
 .v2-career-play-button:hover {
