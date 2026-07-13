@@ -313,6 +313,45 @@ body {
   transform: scale(1.08);
 }
 
+.v2-moment-play-button {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%) scale(0.92);
+  width: 52px;
+  height: 52px;
+  border: 1px solid rgba(255, 255, 255, 0.55);
+  border-radius: 999px;
+  background: rgba(17, 24, 39, 0.56);
+  display: grid;
+  place-items: center;
+  cursor: pointer;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 200ms ease, transform 200ms ease, background-color 200ms ease;
+  z-index: 25;
+}
+
+.v2-moment-play-button span {
+  width: 0;
+  height: 0;
+  border-top: 9px solid transparent;
+  border-bottom: 9px solid transparent;
+  border-left: 14px solid #fff;
+  margin-left: 3px;
+}
+
+.v2-moment.has-video:hover .v2-moment-play-button,
+.v2-moment.has-video:focus-within .v2-moment-play-button {
+  opacity: 1;
+  pointer-events: auto;
+  transform: translate(-50%, -50%) scale(1);
+}
+
+.v2-moment-play-button:hover {
+  background: rgba(17, 24, 39, 0.72);
+}
+
 .v2-moment.is-expanded {
   height: 260px;
   transform: translateY(-10px) scale(1.85);

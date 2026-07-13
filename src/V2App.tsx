@@ -103,6 +103,9 @@ function V2App() {
     'vidmob-diversity':
       'https://drive.google.com/file/d/1fuvqr-F1fhG74VM4vvgYaAV9ZzZW2dSV/preview',
     stern: 'https://www.youtube.com/embed/AVt4dJAhc1Q?autoplay=1&rel=0',
+    'largest-deal':
+      'https://drive.google.com/file/d/1DD_KLL64F5eME0sqvHnicUjZeJql1kai/preview',
+    mvp: 'https://drive.google.com/file/d/1fHNxtih7oFFaomxJTjmDHUZnwKELq_cc/preview',
   }
 
   useEffect(() => {
@@ -220,12 +223,28 @@ function V2App() {
           {salesforceHighlights.map((moment) => (
             <article
               key={moment.id}
-              className={`v2-moment ${expandedMoment === moment.id ? 'is-expanded' : ''}`}
-              onClick={() =>
+              className={`v2-moment ${moment.id === 'largest-deal' || moment.id === 'mvp' ? 'has-video' : ''} ${expandedMoment === moment.id ? 'is-expanded' : ''}`}
+              onClick={() => {
+                if (moment.id === 'largest-deal' || moment.id === 'mvp') return
                 setExpandedMoment((current) => (current === moment.id ? null : moment.id))
-              }
+              }}
             >
               <img src={moment.image} alt={moment.title} loading="lazy" />
+              {(moment.id === 'largest-deal' || moment.id === 'mvp') && (
+                <button
+                  type="button"
+                  className="v2-moment-play-button"
+                  aria-label={moment.id === 'mvp' ? 'Play MVP video' : 'Play $400k+ Deal video'}
+                  onClick={(event) => {
+                    event.stopPropagation()
+                    setActiveCareerVideo(
+                      moment.id === 'mvp' ? careerVideoLinks.mvp : careerVideoLinks['largest-deal'],
+                    )
+                  }}
+                >
+                  <span aria-hidden="true" />
+                </button>
+              )}
               <div className="v2-moment-copy">
                 <h3>{moment.title}</h3>
                 <p>{moment.subtitle}</p>
