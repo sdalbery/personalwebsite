@@ -13,12 +13,6 @@ type Moment = {
 
 const salesforceHighlights: Moment[] = [
   {
-    id: 'acv-driver',
-    title: '#1 Driver of ACV',
-    subtitle: 'Drove over $400k in ACV during Q4 2026, the highest amount of ACV on my team.',
-    image: '/images/acv-driver.png',
-  },
-  {
     id: 'mvp',
     title: 'MVP',
     subtitle:
@@ -26,8 +20,14 @@ const salesforceHighlights: Moment[] = [
     image: '/images/mvp.png',
   },
   {
+    id: 'acv-driver',
+    title: '#1 Driver of ACV',
+    subtitle: 'Drove over $400k in ACV during Q4 2026, the highest amount of ACV on my team.',
+    image: '/images/acv-driver.png',
+  },
+  {
     id: 'largest-deal',
-    title: '$400k+ Deal',
+    title: '$300k+ Deal',
     subtitle:
       "Currently leading one of SB's largest opportunities: a year-long transformational evaluation for Robson Communities, solutioning products like A1E, RCA, and Agentforce.",
     image: '/images/largest-deal.png',
@@ -45,7 +45,7 @@ const leadershipAndCulture: Moment[] = [
     id: 'blackbelt',
     title: 'Slack Blackbelt',
     subtitle:
-      'Lead Slack evaluations for the entire SB org, driving revenue and expansion for customers globally.',
+      'Developed Slack enablement series for SB, and act as a Slack specialist SE on high-ACV Slack evaluations.',
     image: '/images/blackbelt.png',
   },
   {
@@ -106,6 +106,7 @@ function V2App() {
     'largest-deal':
       'https://drive.google.com/file/d/1DD_KLL64F5eME0sqvHnicUjZeJql1kai/preview',
     mvp: 'https://drive.google.com/file/d/1fHNxtih7oFFaomxJTjmDHUZnwKELq_cc/preview',
+    blackbelt: 'https://drive.google.com/file/d/1GfvhhZMP-DlQLOHKHWGDMTeiGZe01qte/preview',
   }
 
   useEffect(() => {
@@ -260,12 +261,26 @@ function V2App() {
           {leadershipAndCulture.map((moment) => (
             <article
               key={moment.id}
-              className={`v2-moment ${expandedMoment === moment.id ? 'is-expanded' : ''}`}
-              onClick={() =>
+              className={`v2-moment ${moment.id === 'blackbelt' ? 'has-video' : ''} ${expandedMoment === moment.id ? 'is-expanded' : ''}`}
+              onClick={() => {
+                if (moment.id === 'blackbelt') return
                 setExpandedMoment((current) => (current === moment.id ? null : moment.id))
-              }
+              }}
             >
               <img src={moment.image} alt={moment.title} loading="lazy" />
+              {moment.id === 'blackbelt' && (
+                <button
+                  type="button"
+                  className="v2-moment-play-button"
+                  aria-label="Play Slack Blackbelt video"
+                  onClick={(event) => {
+                    event.stopPropagation()
+                    setActiveCareerVideo(careerVideoLinks.blackbelt)
+                  }}
+                >
+                  <span aria-hidden="true" />
+                </button>
+              )}
               <div className="v2-moment-copy">
                 <h3>{moment.title}</h3>
                 <p>{moment.subtitle}</p>
