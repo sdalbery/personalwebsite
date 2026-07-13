@@ -93,11 +93,17 @@ const colleagueQuotes = [
 function V2App() {
   const [expandedMoment, setExpandedMoment] = useState<string | null>(null)
   const [showQuotes, setShowQuotes] = useState(false)
-  const [expandedCareerId, setExpandedCareerId] = useState<string | null>(null)
   const [showTsukiBubble, setShowTsukiBubble] = useState(false)
+  const [activeCareerVideo, setActiveCareerVideo] = useState<string | null>(null)
   const quotesWrapRef = useRef<HTMLDivElement | null>(null)
   const quotesContentRef = useRef<HTMLDivElement | null>(null)
   const tsukiWrapRef = useRef<HTMLDivElement | null>(null)
+
+  const careerVideoLinks: Record<string, string> = {
+    'vidmob-diversity':
+      'https://drive.google.com/file/d/1fuvqr-F1fhG74VM4vvgYaAV9ZzZW2dSV/preview',
+    stern: 'https://www.youtube.com/embed/AVt4dJAhc1Q?autoplay=1&rel=0',
+  }
 
   useEffect(() => {
     const handlePointerDown = (event: MouseEvent) => {
@@ -252,19 +258,13 @@ function V2App() {
 
       <section className="v2-section">
         <h2>Pre-Salesforce Career Highlights</h2>
-        <div className="v2-career-columns" onMouseLeave={() => setExpandedCareerId(null)}>
-          <article
-            className={`v2-career-card ${expandedCareerId === 'vidmob-diversity' ? 'is-expanded' : ''}`}
-          >
+        <div className="v2-career-columns">
+          <article className="v2-career-card has-video">
             <button
               type="button"
               className="v2-career-image-button"
-              onClick={() =>
-                setExpandedCareerId((current) =>
-                  current === 'vidmob-diversity' ? null : 'vidmob-diversity',
-                )
-              }
-              aria-label="Expand VidMob Diversity Report visual"
+              onClick={() => setActiveCareerVideo(careerVideoLinks['vidmob-diversity'])}
+              aria-label="Play VidMob Diversity Report video"
             >
               <img
                 className="v2-career-logo"
@@ -273,32 +273,31 @@ function V2App() {
                 loading="lazy"
               />
             </button>
+            <button
+              type="button"
+              className="v2-career-play-button"
+              aria-label="Play VidMob Diversity Report video"
+              onClick={() => setActiveCareerVideo(careerVideoLinks['vidmob-diversity'])}
+            >
+              <span aria-hidden="true" />
+            </button>
             <h3>VidMob Diversity Report</h3>
             <p>
-              Collaborated with VidMob's Product team to build the Diversity Report, encouraging
-              brands to feature a more diverse range of skin tones, gender identities, and ages.
-              The product drove over $150,000 in revenue from customers like L'Oréal.
+              Conceived and developed VidMob's Diversity Report in partnership with Product,
+              encouraging brands to feature more diverse skin tones, gender identities, and ages,
+              generating over $150,000 in revenue from customers like L'Oréal.
             </p>
           </article>
 
-          <article
-            className={`v2-career-card ${expandedCareerId === 'vidmob-4m' ? 'is-expanded' : ''}`}
-          >
-            <button
-              type="button"
-              className="v2-career-image-button"
-              onClick={() =>
-                setExpandedCareerId((current) => (current === 'vidmob-4m' ? null : 'vidmob-4m'))
-              }
-              aria-label="Expand $4M in closed business visual"
-            >
+          <article className="v2-career-card">
+            <div className="v2-career-image-button is-static" aria-hidden="true">
               <img
                 className="v2-career-logo"
                 src={vidmobClosedBusinessImage}
                 alt="$4M in closed business"
                 loading="lazy"
               />
-            </button>
+            </div>
             <h3>$4M in Enterprise Sales</h3>
             <p>
               Drove over $4M in revenue as a VidMob SE, closing enterprise opportunities from
@@ -306,16 +305,12 @@ function V2App() {
             </p>
           </article>
 
-          <article
-            className={`v2-career-card ${expandedCareerId === 'stern' ? 'is-expanded' : ''}`}
-          >
+          <article className="v2-career-card has-video">
             <button
               type="button"
               className="v2-career-image-button"
-              onClick={() =>
-                setExpandedCareerId((current) => (current === 'stern' ? null : 'stern'))
-              }
-              aria-label="Expand NYU Stern commencement photo"
+              onClick={() => setActiveCareerVideo(careerVideoLinks.stern)}
+              aria-label="Play NYU Stern commencement video"
             >
               <img
                 className="v2-career-logo"
@@ -323,6 +318,14 @@ function V2App() {
                 alt="NYU Stern commencement speech"
                 loading="lazy"
               />
+            </button>
+            <button
+              type="button"
+              className="v2-career-play-button"
+              aria-label="Play Stern Commencement Speaker video"
+              onClick={() => setActiveCareerVideo(careerVideoLinks.stern)}
+            >
+              <span aria-hidden="true" />
             </button>
             <h3>Stern Commencement Speaker</h3>
             <p>
@@ -345,6 +348,31 @@ function V2App() {
         </button>
         {showTsukiBubble && <div className="v2-tsuki-bubble">I'm Scot's cat, Tsuki!</div>}
       </div>
+
+      {activeCareerVideo && (
+        <div className="v2-video-modal" role="dialog" aria-modal="true" onClick={() => setActiveCareerVideo(null)}>
+          <div className="v2-video-frame-wrap" onClick={(event) => event.stopPropagation()}>
+            <button
+              type="button"
+              className="v2-video-close"
+              aria-label="Close video"
+              onClick={() => setActiveCareerVideo(null)}
+            >
+              Close
+            </button>
+            {activeCareerVideo.includes('.mp4') || activeCareerVideo.includes('.mov') ? (
+              <video src={activeCareerVideo} controls autoPlay playsInline />
+            ) : (
+              <iframe
+                src={activeCareerVideo}
+                title="Career highlight video"
+                allow="autoplay; encrypted-media; picture-in-picture; web-share"
+                allowFullScreen
+              />
+            )}
+          </div>
+        </div>
+      )}
     </main>
   )
 }
