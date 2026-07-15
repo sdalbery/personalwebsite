@@ -398,6 +398,9 @@ function V2App() {
               <video src={activeCareerVideo} controls autoPlay playsInline />
             ) : (
               <iframe
+                className={`v2-video-embed ${
+                  activeCareerVideo.includes('drive.google.com') ? 'is-drive' : ''
+                }`}
                 src={activeCareerVideo}
                 title="Career highlight video"
                 allow="autoplay; encrypted-media; picture-in-picture; web-share"

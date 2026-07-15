@@ -720,6 +720,10 @@ body {
   background: #000;
 }
 
+.v2-video-embed.is-drive {
+  aspect-ratio: 4 / 3;
+}
+
 .v2-video-frame-wrap video {
   width: 100%;
   aspect-ratio: 16 / 9;
@@ -893,5 +897,10 @@ body {
 
   .v2-video-modal {
     padding: 14px;
+  }
+
+  .v2-video-embed.is-drive {
+    aspect-ratio: auto;
+    height: min(72vh, 560px);
   }
 }
