@@ -154,7 +154,7 @@ function V2App() {
               <span>Location:</span>San Francisco
             </p>
             <p>
-              <span>Salesforce Start Date:</span>August 2025
+              <span>Salesforce Start Date:</span>August 4, 2025
             </p>
           </aside>
         </div>
