@@ -108,6 +108,7 @@ function V2App() {
     mvp: 'https://drive.google.com/file/d/1fHNxtih7oFFaomxJTjmDHUZnwKELq_cc/preview',
     blackbelt: 'https://drive.google.com/file/d/1GfvhhZMP-DlQLOHKHWGDMTeiGZe01qte/preview',
   }
+  const isDriveVideo = activeCareerVideo?.includes('drive.google.com') ?? false
 
   useEffect(() => {
     const handlePointerDown = (event: MouseEvent) => {
@@ -385,7 +386,10 @@ function V2App() {
 
       {activeCareerVideo && (
         <div className="v2-video-modal" role="dialog" aria-modal="true" onClick={() => setActiveCareerVideo(null)}>
-          <div className="v2-video-frame-wrap" onClick={(event) => event.stopPropagation()}>
+          <div
+            className={`v2-video-frame-wrap ${isDriveVideo ? 'is-drive' : ''}`}
+            onClick={(event) => event.stopPropagation()}
+          >
             <button
               type="button"
               className="v2-video-close"
@@ -398,9 +402,7 @@ function V2App() {
               <video src={activeCareerVideo} controls autoPlay playsInline />
             ) : (
               <iframe
-                className={`v2-video-embed ${
-                  activeCareerVideo.includes('drive.google.com') ? 'is-drive' : ''
-                }`}
+                className={`v2-video-embed ${isDriveVideo ? 'is-drive' : ''}`}
                 src={activeCareerVideo}
                 title="Career highlight video"
                 allow="autoplay; encrypted-media; picture-in-picture; web-share"

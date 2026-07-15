@@ -711,6 +711,10 @@ body {
   width: min(980px, 92vw);
 }
 
+.v2-video-frame-wrap.is-drive {
+  width: min(760px, 88vw);
+}
+
 .v2-video-frame-wrap iframe {
   width: 100%;
   aspect-ratio: 16 / 9;
@@ -721,7 +725,8 @@ body {
 }
 
 .v2-video-embed.is-drive {
-  aspect-ratio: 4 / 3;
+  display: block;
+  aspect-ratio: 16 / 10;
 }
 
 .v2-video-frame-wrap video {
@@ -892,15 +897,20 @@ body {
   }
 
   .v2-career-play-button {
-    top: 96px;
+    top: 16px;
+    right: 16px;
   }
 
   .v2-video-modal {
     padding: 14px;
   }
 
+  .v2-video-frame-wrap.is-drive {
+    width: min(560px, 92vw);
+  }
+
   .v2-video-embed.is-drive {
-    aspect-ratio: auto;
-    height: min(72vh, 560px);
+    aspect-ratio: 16 / 10;
+    height: auto;
   }
 }
