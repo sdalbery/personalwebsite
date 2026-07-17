@@ -1,4 +1,5 @@
 import { useEffect, useRef, useState } from 'react'
+import { trackEvent } from './analytics'
 import vidmobDiversityReportImage from './assets/vidmob-diversity-report.png'
 import vidmobClosedBusinessImage from './assets/vidmob-4m-closed-business.png'
 import sternCommencementPhoto from './assets/stern-commencement-photo.png'
@@ -110,6 +111,29 @@ function V2App() {
   }
   const isDriveVideo = activeCareerVideo?.includes('drive.google.com') ?? false
 
+  const getVideoSource = (url: string) => {
+    if (url.includes('youtube.com')) return 'youtube'
+    if (url.includes('drive.google.com')) return 'google_drive'
+    return 'direct'
+  }
+
+  const openCareerVideo = (videoId: string, url: string) => {
+    trackEvent('video_play', {
+      video_id: videoId,
+      video_source: getVideoSource(url),
+    })
+    setActiveCareerVideo(url)
+  }
+
+  const closeCareerVideo = () => {
+    if (activeCareerVideo) {
+      trackEvent('video_close', {
+        video_source: getVideoSource(activeCareerVideo),
+      })
+    }
+    setActiveCareerVideo(null)
+  }
+
   useEffect(() => {
     const handlePointerDown = (event: MouseEvent) => {
       if (!quotesWrapRef.current?.contains(event.target as Node)) {
@@ -173,13 +197,29 @@ function V2App() {
         </p>
         <div className="v2-hero-row">
           <div className="v2-links">
-            <a href="https://www.linkedin.com/in/scot-dalbery/" target="_blank" rel="noreferrer">
+            <a
+              href="https://www.linkedin.com/in/scot-dalbery/"
+              target="_blank"
+              rel="noreferrer"
+              onClick={() => {
+                trackEvent('outbound_click', {
+                  destination: 'linkedin',
+                  location: 'hero_links',
+                })
+              }}
+            >
               LinkedIn
             </a>
             <a
               href="https://salesforce.enterprise.slack.com/team/U098P4AH11S"
               target="_blank"
               rel="noreferrer"
+              onClick={() => {
+                trackEvent('outbound_click', {
+                  destination: 'slack',
+                  location: 'hero_links',
+                })
+              }}
             >
               Slack Me
             </a>
@@ -192,7 +232,13 @@ function V2App() {
             >
               <button
                 className="v2-quotes-tile"
-                onClick={() => setShowQuotes((current) => !current)}
+                onClick={() =>
+                  setShowQuotes((current) => {
+                    const nextState = !current
+                    trackEvent('quotes_toggle', { open: nextState })
+                    return nextState
+                  })
+                }
                 aria-expanded={showQuotes}
               >
                 <span className="v2-quotes-title">Quotes from Colleages</span>
@@ -228,7 +274,16 @@ function V2App() {
               className={`v2-moment ${moment.id === 'largest-deal' || moment.id === 'mvp' ? 'has-video' : ''} ${expandedMoment === moment.id ? 'is-expanded' : ''}`}
               onClick={() => {
                 if (moment.id === 'largest-deal' || moment.id === 'mvp') return
-                setExpandedMoment((current) => (current === moment.id ? null : moment.id))
+                setExpandedMoment((current) => {
+                  const isExpanding = current !== moment.id
+                  if (isExpanding) {
+                    trackEvent('tile_expand', {
+                      tile_id: moment.id,
+                      section: 'sales_highlights',
+                    })
+                  }
+                  return current === moment.id ? null : moment.id
+                })
               }}
             >
               <img src={moment.image} alt={moment.title} loading="lazy" />
@@ -239,7 +294,8 @@ function V2App() {
                   aria-label={moment.id === 'mvp' ? 'Play MVP video' : 'Play $400k+ Deal video'}
                   onClick={(event) => {
                     event.stopPropagation()
-                    setActiveCareerVideo(
+                    openCareerVideo(
+                      moment.id === 'mvp' ? 'mvp' : 'largest_deal',
                       moment.id === 'mvp' ? careerVideoLinks.mvp : careerVideoLinks['largest-deal'],
                     )
                   }}
@@ -265,7 +321,16 @@ function V2App() {
               className={`v2-moment ${moment.id === 'blackbelt' ? 'has-video' : ''} ${expandedMoment === moment.id ? 'is-expanded' : ''}`}
               onClick={() => {
                 if (moment.id === 'blackbelt') return
-                setExpandedMoment((current) => (current === moment.id ? null : moment.id))
+                setExpandedMoment((current) => {
+                  const isExpanding = current !== moment.id
+                  if (isExpanding) {
+                    trackEvent('tile_expand', {
+                      tile_id: moment.id,
+                      section: 'leadership_culture',
+                    })
+                  }
+                  return current === moment.id ? null : moment.id
+                })
               }}
             >
               <img src={moment.image} alt={moment.title} loading="lazy" />
@@ -276,7 +341,7 @@ function V2App() {
                   aria-label="Play Slack Blackbelt video"
                   onClick={(event) => {
                     event.stopPropagation()
-                    setActiveCareerVideo(careerVideoLinks.blackbelt)
+                    openCareerVideo('blackbelt', careerVideoLinks.blackbelt)
                   }}
                 >
                   <span aria-hidden="true" />
@@ -298,7 +363,7 @@ function V2App() {
             <button
               type="button"
               className="v2-career-image-button"
-              onClick={() => setActiveCareerVideo(careerVideoLinks['vidmob-diversity'])}
+              onClick={() => openCareerVideo('vidmob_diversity', careerVideoLinks['vidmob-diversity'])}
               aria-label="Play VidMob Diversity Report video"
             >
               <img
@@ -312,7 +377,7 @@ function V2App() {
               type="button"
               className="v2-career-play-button"
               aria-label="Play VidMob Diversity Report video"
-              onClick={() => setActiveCareerVideo(careerVideoLinks['vidmob-diversity'])}
+              onClick={() => openCareerVideo('vidmob_diversity', careerVideoLinks['vidmob-diversity'])}
             >
               <span aria-hidden="true" />
             </button>
@@ -344,7 +409,7 @@ function V2App() {
             <button
               type="button"
               className="v2-career-image-button"
-              onClick={() => setActiveCareerVideo(careerVideoLinks.stern)}
+              onClick={() => openCareerVideo('stern_commencement', careerVideoLinks.stern)}
               aria-label="Play NYU Stern commencement video"
             >
               <img
@@ -358,7 +423,7 @@ function V2App() {
               type="button"
               className="v2-career-play-button"
               aria-label="Play Stern Commencement Speaker video"
-              onClick={() => setActiveCareerVideo(careerVideoLinks.stern)}
+              onClick={() => openCareerVideo('stern_commencement', careerVideoLinks.stern)}
             >
               <span aria-hidden="true" />
             </button>
@@ -377,7 +442,13 @@ function V2App() {
           className="v2-tsuki-button"
           aria-label="Say hi to Tsuki"
           aria-expanded={showTsukiBubble}
-          onClick={() => setShowTsukiBubble((current) => !current)}
+          onClick={() =>
+            setShowTsukiBubble((current) => {
+              const nextState = !current
+              trackEvent('tsuki_toggle', { open: nextState })
+              return nextState
+            })
+          }
         >
           <img src={tsukiKawaiiCat} alt="" aria-hidden="true" />
         </button>
@@ -385,7 +456,7 @@ function V2App() {
       </div>
 
       {activeCareerVideo && (
-        <div className="v2-video-modal" role="dialog" aria-modal="true" onClick={() => setActiveCareerVideo(null)}>
+        <div className="v2-video-modal" role="dialog" aria-modal="true" onClick={closeCareerVideo}>
           <div
             className={`v2-video-frame-wrap ${isDriveVideo ? 'is-drive' : ''}`}
             onClick={(event) => event.stopPropagation()}
@@ -394,7 +465,7 @@ function V2App() {
               type="button"
               className="v2-video-close"
               aria-label="Close video"
-              onClick={() => setActiveCareerVideo(null)}
+              onClick={closeCareerVideo}
             >
               Close
             </button>
