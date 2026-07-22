@@ -3,6 +3,8 @@ import { trackEvent } from './analytics'
 import vidmobDiversityReportImage from './assets/vidmob-diversity-report.png'
 import vidmobClosedBusinessImage from './assets/vidmob-4m-closed-business.png'
 import sternCommencementPhoto from './assets/stern-commencement-photo.png'
+import rayluCaseStudyImage from './assets/raylu-case-study.png'
+import rayluCaseStudyPreviewImage from './assets/raylu-case-study-preview.png'
 import tsukiKawaiiCat from './assets/tsuki-kawaii-cat.png'
 
 type Moment = {
@@ -10,21 +12,30 @@ type Moment = {
   title: string
   subtitle: string
   image: string
+  featured?: boolean
 }
 
 const salesforceHighlights: Moment[] = [
+  {
+    id: 'acv-driver',
+    title: '#1 Driver of ACV',
+    subtitle: 'Drove over $400k in ACV during Q4 2026, the highest amount of ACV on my team.',
+    image: '/images/acv-driver.png',
+  },
+  {
+    id: 'raylu-case-study',
+    title: 'Raylu Salesforce Case Study',
+    subtitle:
+      'Led Raylu\'s initial evaluation of Agentforce Sales and Slack, resulting in a 2x uplift in pipeline coverage for Raylu and a published Salesforce case study.',
+    image: rayluCaseStudyImage,
+    featured: true,
+  },
   {
     id: 'mvp',
     title: 'MVP',
     subtitle:
       'Named MVP of SB Americas by Samiran Dwivedi, SVP of SMB Solution Engineering.',
     image: '/images/mvp.png',
-  },
-  {
-    id: 'acv-driver',
-    title: '#1 Driver of ACV',
-    subtitle: 'Drove over $400k in ACV during Q4 2026, the highest amount of ACV on my team.',
-    image: '/images/acv-driver.png',
   },
   {
     id: 'largest-deal',
@@ -96,6 +107,8 @@ function V2App() {
   const [showQuotes, setShowQuotes] = useState(false)
   const [showTsukiBubble, setShowTsukiBubble] = useState(false)
   const [activeCareerVideo, setActiveCareerVideo] = useState<string | null>(null)
+  const [activeVideoMeta, setActiveVideoMeta] = useState<{ title: string; subtitle: string } | null>(null)
+  const [showRayluCaseStudy, setShowRayluCaseStudy] = useState(false)
   const quotesWrapRef = useRef<HTMLDivElement | null>(null)
   const quotesContentRef = useRef<HTMLDivElement | null>(null)
   const tsukiWrapRef = useRef<HTMLDivElement | null>(null)
@@ -109,6 +122,7 @@ function V2App() {
     mvp: 'https://drive.google.com/file/d/1fHNxtih7oFFaomxJTjmDHUZnwKELq_cc/preview',
     blackbelt: 'https://drive.google.com/file/d/1GfvhhZMP-DlQLOHKHWGDMTeiGZe01qte/preview',
   }
+  const rayluCaseStudyUrl = 'https://www.salesforce.com/customer-stories/raylu-ai/'
   const isDriveVideo = activeCareerVideo?.includes('drive.google.com') ?? false
 
   const getVideoSource = (url: string) => {
@@ -117,11 +131,12 @@ function V2App() {
     return 'direct'
   }
 
-  const openCareerVideo = (videoId: string, url: string) => {
+  const openCareerVideo = (videoId: string, url: string, title: string, subtitle: string) => {
     trackEvent('video_play', {
       video_id: videoId,
       video_source: getVideoSource(url),
     })
+    setActiveVideoMeta({ title, subtitle })
     setActiveCareerVideo(url)
   }
 
@@ -131,7 +146,32 @@ function V2App() {
         video_source: getVideoSource(activeCareerVideo),
       })
     }
+    setActiveVideoMeta(null)
     setActiveCareerVideo(null)
+  }
+
+  const openRayluCaseStudy = () => {
+    trackEvent('case_study_open', {
+      customer: 'raylu',
+      location: 'sales_highlights_tile',
+    })
+    setShowRayluCaseStudy(true)
+  }
+
+  const closeRayluCaseStudy = () => {
+    trackEvent('case_study_close', {
+      customer: 'raylu',
+      location: 'case_study_modal',
+    })
+    setShowRayluCaseStudy(false)
+  }
+
+  const openRayluCaseStudyInNewTab = () => {
+    trackEvent('case_study_open_new_tab', {
+      customer: 'raylu',
+      location: 'case_study_modal',
+    })
+    window.open(rayluCaseStudyUrl, '_blank', 'noopener,noreferrer')
   }
 
   useEffect(() => {
@@ -267,13 +307,16 @@ function V2App() {
 
       <section className="v2-section">
         <h2>Sales Highlights</h2>
-        <div className="v2-moments" onMouseLeave={() => setExpandedMoment(null)}>
+        <div className="v2-moments v2-sales-moments" onMouseLeave={() => setExpandedMoment(null)}>
           {salesforceHighlights.map((moment) => (
             <article
               key={moment.id}
-              className={`v2-moment ${moment.id === 'largest-deal' || moment.id === 'mvp' ? 'has-video' : ''} ${expandedMoment === moment.id ? 'is-expanded' : ''}`}
+              className={`v2-moment ${moment.id === 'largest-deal' || moment.id === 'mvp' ? 'has-video' : ''} ${moment.featured ? 'is-featured' : ''} ${expandedMoment === moment.id ? 'is-expanded' : ''}`}
               onClick={() => {
-                if (moment.id === 'largest-deal' || moment.id === 'mvp') return
+                if (moment.id === 'raylu-case-study') {
+                  openRayluCaseStudy()
+                  return
+                }
                 setExpandedMoment((current) => {
                   const isExpanding = current !== moment.id
                   if (isExpanding) {
@@ -297,6 +340,8 @@ function V2App() {
                     openCareerVideo(
                       moment.id === 'mvp' ? 'mvp' : 'largest_deal',
                       moment.id === 'mvp' ? careerVideoLinks.mvp : careerVideoLinks['largest-deal'],
+                      moment.title,
+                      moment.subtitle,
                     )
                   }}
                 >
@@ -320,7 +365,6 @@ function V2App() {
               key={moment.id}
               className={`v2-moment ${moment.id === 'blackbelt' ? 'has-video' : ''} ${expandedMoment === moment.id ? 'is-expanded' : ''}`}
               onClick={() => {
-                if (moment.id === 'blackbelt') return
                 setExpandedMoment((current) => {
                   const isExpanding = current !== moment.id
                   if (isExpanding) {
@@ -341,7 +385,7 @@ function V2App() {
                   aria-label="Play Slack Blackbelt video"
                   onClick={(event) => {
                     event.stopPropagation()
-                    openCareerVideo('blackbelt', careerVideoLinks.blackbelt)
+                    openCareerVideo('blackbelt', careerVideoLinks.blackbelt, moment.title, moment.subtitle)
                   }}
                 >
                   <span aria-hidden="true" />
@@ -363,7 +407,14 @@ function V2App() {
             <button
               type="button"
               className="v2-career-image-button"
-              onClick={() => openCareerVideo('vidmob_diversity', careerVideoLinks['vidmob-diversity'])}
+              onClick={() =>
+                openCareerVideo(
+                  'vidmob_diversity',
+                  careerVideoLinks['vidmob-diversity'],
+                  'VidMob Diversity Report',
+                  "Conceived and developed VidMob's Diversity Report in partnership with Product, encouraging brands to feature more diverse skin tones, gender identities, and ages, generating over $150,000 in revenue from customers like L'Oréal.",
+                )
+              }
               aria-label="Play VidMob Diversity Report video"
             >
               <img
@@ -377,7 +428,14 @@ function V2App() {
               type="button"
               className="v2-career-play-button"
               aria-label="Play VidMob Diversity Report video"
-              onClick={() => openCareerVideo('vidmob_diversity', careerVideoLinks['vidmob-diversity'])}
+              onClick={() =>
+                openCareerVideo(
+                  'vidmob_diversity',
+                  careerVideoLinks['vidmob-diversity'],
+                  'VidMob Diversity Report',
+                  "Conceived and developed VidMob's Diversity Report in partnership with Product, encouraging brands to feature more diverse skin tones, gender identities, and ages, generating over $150,000 in revenue from customers like L'Oréal.",
+                )
+              }
             >
               <span aria-hidden="true" />
             </button>
@@ -409,7 +467,14 @@ function V2App() {
             <button
               type="button"
               className="v2-career-image-button"
-              onClick={() => openCareerVideo('stern_commencement', careerVideoLinks.stern)}
+              onClick={() =>
+                openCareerVideo(
+                  'stern_commencement',
+                  careerVideoLinks.stern,
+                  'Stern Commencement Speaker',
+                  "Selected as NYU Stern's Commencement Speaker during the 2022 MBA graduation ceremony in Madison Square Garden.",
+                )
+              }
               aria-label="Play NYU Stern commencement video"
             >
               <img
@@ -423,7 +488,14 @@ function V2App() {
               type="button"
               className="v2-career-play-button"
               aria-label="Play Stern Commencement Speaker video"
-              onClick={() => openCareerVideo('stern_commencement', careerVideoLinks.stern)}
+              onClick={() =>
+                openCareerVideo(
+                  'stern_commencement',
+                  careerVideoLinks.stern,
+                  'Stern Commencement Speaker',
+                  "Selected as NYU Stern's Commencement Speaker during the 2022 MBA graduation ceremony in Madison Square Garden.",
+                )
+              }
             >
               <span aria-hidden="true" />
             </button>
@@ -480,6 +552,49 @@ function V2App() {
                 allowFullScreen
               />
             )}
+            {activeVideoMeta && (
+              <div className="v2-video-caption">
+                <h3>{activeVideoMeta.title}</h3>
+                <p>{activeVideoMeta.subtitle}</p>
+              </div>
+            )}
+          </div>
+        </div>
+      )}
+
+      {showRayluCaseStudy && (
+        <div
+          className="v2-video-modal v2-case-study-modal"
+          role="dialog"
+          aria-modal="true"
+          onClick={closeRayluCaseStudy}
+        >
+          <div className="v2-case-study-image-wrap" onClick={(event) => event.stopPropagation()}>
+            <button
+              type="button"
+              className="v2-video-close"
+              aria-label="Close case study"
+              onClick={closeRayluCaseStudy}
+            >
+              Close
+            </button>
+            <img
+              className="v2-case-study-image"
+              src={rayluCaseStudyPreviewImage}
+              alt="Raylu Salesforce case study preview"
+            />
+            <div className="v2-video-caption">
+              <h3>Raylu Salesforce Case Study</h3>
+              <p>
+                Led Raylu&apos;s initial evaluation of Agentforce Sales and Slack, resulting in a
+                2x uplift in pipeline coverage for Raylu and a published Salesforce case study.
+              </p>
+            </div>
+            <div className="v2-case-study-footer">
+              <button type="button" className="v2-case-study-read-button" onClick={openRayluCaseStudyInNewTab}>
+                Read the Full Case Study
+              </button>
+            </div>
           </div>
         </div>
       )}
